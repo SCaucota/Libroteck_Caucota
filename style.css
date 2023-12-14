@@ -1,0 +1,192 @@
+/*Imagen inicio sección*/
+.sectionTitulo {
+    width: 100%;
+    height: 500px;
+    background-image: url("./img/fondo\ libreria.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.tituloContainer {
+    background-color: white;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 2rem 4rem;
+    z-index: 1;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+}
+
+/*Menu*/
+
+.nav-link{
+    font-size: 20px;
+}
+
+/*Sección libros*/
+.seccionLibros{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin: 5rem 2rem;
+}
+
+.card{
+    width: 18rem;
+}
+
+.card-img-top{
+    height: 387.89px !important;
+}
+
+.card-body{
+    display: flex;
+    align-items: center;
+    padding-bottom: 0px;
+}
+
+.datosCard{
+    padding: 2rem 2rem;
+    padding-top: 1rem;
+}
+
+.btn{
+    width: 100%;
+    background-color: black;
+    color: white;
+}
+
+.btn:hover{
+    border: 1px solid black;
+}
+
+/*Carrito*/
+.containerLibros{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cardCarrito{
+    display: flex;
+    flex-direction: row;
+    width: 500px;
+    padding: 2rem;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.cardImageCarrito{
+    width: 100px;
+    height: 150px;
+}
+
+.input-group{
+    width: 50%;
+}
+
+.input-group-text{
+    cursor: pointer;
+}
+
+.form-control{
+    text-align: center;
+}
+
+.eliminarIcono{
+    padding-bottom: 25px;
+    cursor: pointer;
+}
+
+/*Carrito Total*/
+
+.containerTotalEnvio{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.divTotalEnvio{
+    width: 70%;
+}
+
+.grupo-precio{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.precioEnvioProvincias{
+    margin-bottom: 0rem;
+}
+
+#opcionProvincia{
+    width: 20%;
+}
+
+.botonCalcular{
+    width: 100px;
+}
+
+/*Form Carrito*/
+
+.divForm{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: black;
+    color: white;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.divForm h4{
+    margin-bottom: 2rem;
+}
+
+.provinciaData{
+    display: flex;
+    gap: 10px;
+}
+
+.inputForm{
+    margin-bottom: 2rem;
+}
+
+.finCompra{
+    background-color: white;
+    color: black;
+}
+
+.finCompra:hover{
+    border: 1px solid white;
+}
+
+/*RESUMEN*/
+
+.divResumen{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 2rem;
+}
+
+.divResumen h2{
+    margin-bottom: 1rem;
+}
+
+.dato{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1rem;
+}
+
+.seccionCarrito{
+    margin-bottom: 8rem;
+}
