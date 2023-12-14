@@ -54,6 +54,8 @@ function mostrarCarrito() {
         divContainerLibros.appendChild(divLibro);
         seccionCarrito.appendChild(divContainerLibros);
 
+        let inputC = document.querySelector(".form-control");
+
         const eliminarIcono = divLibro.querySelector(".eliminarIcono");
         eliminarIcono.addEventListener("click", function () {
             eliminarLibroDelCarrito(libro.id);
@@ -125,7 +127,6 @@ function calcularEnvio(precioEnvio) {
     let proviciaElegida = provincias.find(prov => prov.nombre === opcionElegida);
 
     botonCalcularEnvio.addEventListener("click", function () {
-        console.log(totalPrecioLibros)
         precioEnvio = proviciaElegida.costoEnvio;
         localStorage.setItem('precioEnvio', JSON.stringify(precioEnvio));
 

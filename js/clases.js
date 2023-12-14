@@ -35,7 +35,7 @@ class libroEnLista {
 }
 
 let librosSeleccionados = '';
-let totalCompra = 0;
+let totalCompra = JSON.parse(localStorage.getItem('totalPrecioLibros'));
 let precioEnvio = 0;
 let total = 0;
 
