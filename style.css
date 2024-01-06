@@ -170,23 +170,45 @@
 
 /*RESUMEN*/
 
-.divResumen{
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    margin: 2rem;
+.seccionCarrito{
+    margin: 5rem 2rem;
 }
 
 .divResumen h2{
     margin-bottom: 1rem;
 }
 
-.dato{
+.overlay {
     display: flex;
-    flex-direction: row;
-    margin-bottom: 1rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
 }
 
-.seccionCarrito{
-    margin-bottom: 8rem;
+.divResumen{
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+}
+
+/*TOASTIFY*/
+
+.toastify{
+    background: darkgreen;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    width: 250px;
+    border-radius: 4px;
 }

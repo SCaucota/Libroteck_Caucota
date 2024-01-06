@@ -1,0 +1,114 @@
+[
+    {
+        "id": 1,
+        "nombre": "Bajo La Misma Estrella",
+        "precio": 8999,
+        "idCategoria": 1,
+        "stock": 10,
+        "img": "./img/bajo la misma estrella.jpg"
+    },
+    {
+        "id": 2,
+        "nombre": "Yo Antes De Ti",
+        "precio": 17799,
+        "idCategoria": 1,
+        "stock": 12,
+        "img": "./img/Yo Antes De Ti.jpg"
+    },
+    {
+        "id": 3,
+        "nombre": "Eleanor Y Park",
+        "precio": 18000,
+        "idCategoria": 1,
+        "stock": 15,
+        "img": "./img/eleanor y park.jpg"
+    },
+    {
+        "id": 4,
+        "nombre": "Si Decido Quedarme",
+        "precio": 8899,
+        "idCategoria": 1,
+        "stock": 20,
+        "img": "./img/Si decido quedarme.jpg"
+    },
+    {
+        "id": 5,
+        "nombre": "Harry Potter Y La Piedra Filosofal",
+        "precio": 15599,
+        "idCategoria": 2,
+        "stock": 5,
+        "img": "./img/Harry Potter y la piedra filosofal.jpg"
+    },
+    {
+        "id": 6,
+        "nombre": "La Selección",
+        "precio": 12899,
+        "idCategoria": 2,
+        "stock": 8,
+        "img": "./img/la seleccion.jpg"
+    },
+    {
+        "id": 7,
+        "nombre": "El Hobbit",
+        "precio": 10200,
+        "idCategoria": 2,
+        "stock": 10,
+        "img": "./img/el hobbit.jpg"
+    },
+    {
+        "id": 8,
+        "nombre": "La Quinta Ola",
+        "precio": 15479,
+        "idCategoria": 3,
+        "stock": 3,
+        "img": "./img/la quinta ola.jpg"
+    },
+    {
+        "id": 9,
+        "nombre": "Los Juegos Del Hambre",
+        "precio": 11519,
+        "idCategoria": 3,
+        "stock": 11,
+        "img": "./img/los juegos del hambre.jpg"
+    },
+    {
+        "id": 10,
+        "nombre": "Maze Runner",
+        "precio": 10600,
+        "idCategoria": 3,
+        "stock": 15,
+        "img": "./img/maze runner.jpg"
+    },
+    {
+        "id": 11,
+        "nombre": "Cinder",
+        "precio": 10250,
+        "idCategoria": 3,
+        "stock": 5,
+        "img": "./img/cinder.jpg"
+    },
+    {
+        "id": 12,
+        "nombre": "Escrito En El Agua",
+        "precio": 9100,
+        "idCategoria": 4,
+        "stock": 3,
+        "img": "./img/escrito en el agua.jpg"
+    },
+    {
+        "id": 13,
+        "nombre": "La Chica Del Tren",
+        "precio": 10500,
+        "idCategoria": 4,
+        "stock": 6,
+        "img": "./img/La Chica Del Tren.jpg"
+    },
+    {
+        "id": 14,
+        "nombre": "¿Quién Mató A Alex?",
+        "precio": 15579,  
+        "idCategoria": 4,
+        "stock": 6,
+        "img": "./img/quien mato a alex.jpg"
+    }
+]

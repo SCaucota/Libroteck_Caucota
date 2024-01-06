@@ -1,12 +1,17 @@
 function mostrarTodosLibros() {
-    const seccionCarrito = document.querySelector(".seccionCarrito");
+    const seccionCarrito = document.querySelector("#seccionCarrito");
     seccionCarrito.innerHTML = '';
-    const seccionLibros = document.querySelector(".seccionLibros");
+    seccionCarrito.classList.remove("seccionCarrito");
+    const seccionLibros = document.querySelector("#seccionLibros");
     seccionLibros.innerHTML = '';
 
-    libros.forEach(libro => {
-        crearTarjetasLibros(libro)
-    });
+    fetch('./libros.json')
+    .then((response) => response.json())
+    .then((libros) => {
+        libros.forEach(libro => {
+            crearTarjetasLibros(libro)
+        })
+    })
 }
 
 function filtroLibros() {
@@ -15,26 +20,32 @@ function filtroLibros() {
     categoriaFiltro.forEach(categoriaElegida => {
         categoriaElegida.addEventListener("click", function () {
             const categoriaSeleccionada = categorias.find(categoria => categoria.nombre === this.textContent);
-            const librosFiltrados = libros.filter(libro => libro.idCategoria === categoriaSeleccionada.id);
 
-            const seccionCarrito = document.querySelector(".seccionCarrito");
-            seccionCarrito.innerHTML = '';
-            const seccionLibros = document.querySelector(".seccionLibros");
-            seccionLibros.innerHTML = '';
+            fetch('./libros.json')
+                .then((response) => response.json())
+                .then((libros) => {
+                    const librosFiltrados = libros.filter(libro => libro.idCategoria === categoriaSeleccionada.id);
 
-            librosFiltrados.forEach(libro => {
-                crearTarjetasLibros(libro)
-            });
-        })
-    })
+                    const seccionCarrito = document.querySelector("#seccionCarrito");
+                    seccionCarrito.innerHTML = '';
+                    const seccionLibros = document.querySelector("#seccionLibros");
+                    seccionLibros.innerHTML = '';
+
+                    librosFiltrados.forEach(libro => {
+                        crearTarjetasLibros(libro);
+                    });
+                });
+        });
+    });
 
     const inicio = document.querySelector(".inicio");
-    inicio.addEventListener("click", mostrarTodosLibros)
+    inicio.addEventListener("click", mostrarTodosLibros);
 }
 
 function crearTarjetasLibros(libro) {
 
-    const seccionLibros = document.querySelector(".seccionLibros");
+    const seccionLibros = document.querySelector("#seccionLibros");
+    seccionLibros.classList.add("seccionLibros");
 
     const divLibro = document.createElement("div");
     divLibro.classList.add("card");
@@ -97,9 +108,19 @@ function agregarAcarrito(libroElegido) {
 
     const carritoJSON = JSON.stringify(listaDeCompra);
     localStorage.setItem('Carrito', carritoJSON);
+
+    Toastify({
+        text: `Agregado al carrito`,
+        duration: 5000,
+        close: true,
+        offset: {
+            x: 50,
+            y: 10
+        },
+        gravity: "top",
+        position: "right",
+    }).showToast();
 }
-
-
 
 filtroLibros();
 mostrarTodosLibros();
