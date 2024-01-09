@@ -1,18 +1,23 @@
-function mostrarTodosLibros() {
+function cargarLibros(url, filtro) {
     const seccionCarrito = document.querySelector("#seccionCarrito");
     seccionCarrito.innerHTML = '';
     seccionCarrito.classList.remove("seccionCarrito");
     const seccionLibros = document.querySelector("#seccionLibros");
     seccionLibros.innerHTML = '';
 
-    fetch('./libros.json')
-    .then((response) => response.json())
-    .then((libros) => {
-        libros.forEach(libro => {
-            crearTarjetasLibros(libro)
-        })
-    })
-}
+    fetch(url)
+        .then((response) => response.json())
+        .then((libros) => {
+            const librosFiltrados = filtro ? libros.filter(filtro) : libros;
+            librosFiltrados.forEach(libro => {
+                crearTarjetasLibros(libro);
+            });
+        });
+};
+
+function mostrarTodosLibros() {
+    cargarLibros("./libros.json");
+};
 
 function filtroLibros() {
     const categoriaFiltro = document.querySelectorAll(".dropdown-item");
@@ -20,27 +25,13 @@ function filtroLibros() {
     categoriaFiltro.forEach(categoriaElegida => {
         categoriaElegida.addEventListener("click", function () {
             const categoriaSeleccionada = categorias.find(categoria => categoria.nombre === this.textContent);
-
-            fetch('./libros.json')
-                .then((response) => response.json())
-                .then((libros) => {
-                    const librosFiltrados = libros.filter(libro => libro.idCategoria === categoriaSeleccionada.id);
-
-                    const seccionCarrito = document.querySelector("#seccionCarrito");
-                    seccionCarrito.innerHTML = '';
-                    const seccionLibros = document.querySelector("#seccionLibros");
-                    seccionLibros.innerHTML = '';
-
-                    librosFiltrados.forEach(libro => {
-                        crearTarjetasLibros(libro);
-                    });
-                });
+            cargarLibros("./libros.json", libro => libro.idCategoria === categoriaSeleccionada.id)
         });
     });
 
     const inicio = document.querySelector(".inicio");
     inicio.addEventListener("click", mostrarTodosLibros);
-}
+};
 
 function crearTarjetasLibros(libro) {
 
@@ -59,29 +50,44 @@ function crearTarjetasLibros(libro) {
         </div>`;
 
     const boton = divLibro.querySelector(".btn");
+    boton.id = `btn-${libro.id}`;
+
     boton.addEventListener("click", function () {
         agregarAcarrito(libro);
-    })
+    });
 
     seccionLibros.appendChild(divLibro);
 
-    return boton;
-}
+    verificarStock(libro.id);
+};
+
+function verificarStock(libroId) {
+    const carritoActualizado = JSON.parse(localStorage.getItem("Carrito"));
+
+    if (carritoActualizado) {
+        const libroEnCarrito = carritoActualizado.find(libro => libro.id === libroId);
+
+        if (libroEnCarrito && libroEnCarrito.cantidad === libroEnCarrito.stock) {
+            const boton = document.getElementById(`btn-${libroId}`);
+            boton.disabled = true;
+            boton.textContent = "Sin Stock";
+        }
+    }
+
+};
 
 function agregarAcarrito(libroElegido) {
-
     let cantidad = 1;
+
+    listaDeCompra = [];
 
     totalCompra += libroElegido.precio
     let totalCompraJson = JSON.stringify(totalCompra);
     localStorage.setItem('totalPrecioLibros', totalCompraJson);
 
     let carritoActualizado = JSON.parse(localStorage.getItem("Carrito")) || [];
-
     let total = JSON.parse(localStorage.getItem("total"));
     let precioEnvio = JSON.parse(localStorage.getItem("precioEnvio"));
-
-    listaDeCompra = [];
 
     carritoActualizado.forEach(libro => {
         listaDeCompra.push(libro);
@@ -93,21 +99,43 @@ function agregarAcarrito(libroElegido) {
         ? (() => {
             let libroRepetido = listaDeCompra.find(libro => libro.id === libroElegido.id);
             libroRepetido.cantidad += cantidad;
-            total = 0;
-            precioEnvio = 0;
-            localStorage.setItem('total', JSON.stringify(total));
-            localStorage.setItem('precioEnvio', JSON.stringify(precioEnvio));
+
         })()
         : (() => {
-            listaDeCompra = [...listaDeCompra, { id: libroElegido.id, nombre: libroElegido.nombre, img: libroElegido.img, cantidad: cantidad, precio: libroElegido.precio }]
-            total = 0;
-            precioEnvio = 0;
-            localStorage.setItem('total', JSON.stringify(total));
-            localStorage.setItem('precioEnvio', JSON.stringify(precioEnvio));
+            listaDeCompra = [
+                ...listaDeCompra,
+                {
+                    id: libroElegido.id,
+                    nombre: libroElegido.nombre,
+                    img: libroElegido.img,
+                    cantidad: cantidad,
+                    precio: libroElegido.precio,
+                    stock: libroElegido.stock
+                }];
         })();
 
-    const carritoJSON = JSON.stringify(listaDeCompra);
-    localStorage.setItem('Carrito', carritoJSON);
+    total = 0;
+    precioEnvio = 0;
+    localStorage.setItem('total', JSON.stringify(total));
+    localStorage.setItem('precioEnvio', JSON.stringify(precioEnvio));
+
+    const compraPrevia = JSON.parse(localStorage.getItem("Compra Previa"));
+
+    if (compraPrevia && listaDeCompra.length > 0) {
+        listaDeCompra.forEach(libroEnLista => {
+            const libroEnCompraPrevia = compraPrevia.find(libro => libro.id === libroEnLista.id);
+
+            if (libroEnCompraPrevia) {
+                libroEnLista.stock = libroEnCompraPrevia.stock;
+            }
+        });
+
+        localStorage.setItem('Carrito', JSON.stringify(listaDeCompra));
+    } else {
+        localStorage.setItem('Carrito', JSON.stringify(listaDeCompra));
+    }
+
+    verificarStock(libroElegido.id);
 
     Toastify({
         text: `Agregado al carrito`,
@@ -120,7 +148,7 @@ function agregarAcarrito(libroElegido) {
         gravity: "top",
         position: "right",
     }).showToast();
-}
+};
 
 filtroLibros();
 mostrarTodosLibros();

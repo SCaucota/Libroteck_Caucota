@@ -60,47 +60,6 @@ function iniciarCompra(provinciaElegida) {
         divForm.appendChild(tituloForm);
         divForm.appendChild(form);
         seccionCarrito.appendChild(divForm);
-
-        /* const divForm = document.createElement("div");
-        divForm.classList.add("divForm");
-        divForm.innerHTML = `
-            <h4>Se requieren algunos datos para poder generar su compra:</h4>
-            <form>
-                <div class="inputForm" id="nombreDiv">
-                    <label for="nombre">Nombre:</label>
-                    <input class="formInput form-control" value=${JSON.parse(localStorage.getItem("Nombre Cliente"))} id="nombre" type="text" required>
-                </div>
-                <div class="inputForm" id="apellidoDiv">
-                    <label for="apellido">Apellido:</label>
-                    <input class="formInput form-control" value=${JSON.parse(localStorage.getItem("Apellido Cliente"))} id="apellido" type="text" required>
-                </div>
-                <div class="inputForm" id="telefonoDiv">
-                    <label for="telefono">Teléfono:</label>
-                    <input class="formInput form-control" value=${JSON.parse(localStorage.getItem("Telefono Cliente"))}  id="telefono" type="number" required>
-                </div>
-                <div class="inputForm" id="FormaDePagoDiv">
-                    <label for="formasPago">Forma De Pago:</label>
-                    <select class="form-select" name="opcionesFormaPago" id="FormaDePago">
-                        <option selected >Elige...</option>
-                        <option value="Transferencia">Transferencia</option>
-                        <option value="Debito">Débito</option>
-                        <option value="Credito">Crédito</option>
-                    </select>
-                </div>
-                <div class="inputForm provinciaData" id>
-                    <label class="provinciaEscogida" for="provincia">Provincia:</label>
-                    <p class="nombreProvincia">${provinciaElegida}</p>
-                </div>
-                <div class="inputForm" id="direccionDiv">
-                    <label for="direccion">Dirección:</label>
-                    <input class="formInput form-control" value=${JSON.parse(localStorage.getItem("Direccion Cliente"))}  id="direccion" type="text" required>
-                </div>
-                <div>
-                    <button id="finalizarCompra" class="btn finCompra">Finalizar Compra</button>
-                </div>
-            </form>`;
-
-        seccionCarrito.appendChild(divForm); */
     }
     const buttonFin = document.getElementById("finalizarCompra");
     buttonFin.addEventListener("click", function (event) {
@@ -109,7 +68,7 @@ function iniciarCompra(provinciaElegida) {
             finCompra(provinciaElegida)
         }
     });
-}
+};
 
 function manejoErrores(mensaje) {
     const errorDato = document.createElement("div");
@@ -167,24 +126,7 @@ function verificarDatos() {
     });
 
     return valido;
-}
-
-/* function inhabilitarInputs() {
-    const camposInhabilitar = [
-        "nombre",
-        "apellido",
-        "telefono",
-        "FormaDePago",
-        "direccion"
-    ];
-
-    camposInhabilitar.forEach(id => {
-        const inputCampo = document.getElementById(id);
-        if (inputCampo) {
-            inputCampo.disabled = true;
-        }
-    })
-} */
+};
 
 function finCompra(proviciaElegida) {
 
@@ -218,12 +160,10 @@ function finCompra(proviciaElegida) {
             localStorage.setItem('Provincia Cliente', JSON.stringify(proviciaElegida));
             localStorage.setItem('Direccion Cliente', JSON.stringify(direccionInput.value));
 
-            /* inhabilitarInputs(); */
-
             mostrarResumenCompra();
         }
     });
-}
+};
 
 function mostrarResumenCompra() {
     const seccionCarrito = document.querySelector("#seccionCarrito");
@@ -259,8 +199,7 @@ function mostrarResumenCompra() {
         divDato.innerHTML = `
             <h5>${dato.label}: </h5>
             <p>${JSON.parse(localStorage.getItem(`${dato.clave}`))}</p>
-        `
-
+        `;
         divResumen.appendChild(divDato);
     })
 
@@ -290,6 +229,8 @@ function mostrarResumenCompra() {
     botonCerrarResumen.addEventListener("click", function () {
         window.location.href = "/";
 
+        compraPrevia();
+
         localStorage.removeItem("Carrito");
         localStorage.removeItem("total");
         localStorage.removeItem("totalPrecioLibros");
@@ -299,4 +240,26 @@ function mostrarResumenCompra() {
     divResumen.appendChild(botonCerrarResumen);
     divOverlay.appendChild(divResumen);
     seccionCarrito.appendChild(divOverlay);
-}
+};
+
+function compraPrevia() {
+
+    const carrito = JSON.parse(localStorage.getItem("Carrito"));
+    let compraPrevia = JSON.parse(localStorage.getItem("Compra Previa")) || [];
+
+    carrito.forEach(libro => {
+        let libroEnCompraPrevia = compraPrevia.find(libroPrevio => libroPrevio.id === libro.id);
+
+        if (libroEnCompraPrevia) {
+            libroEnCompraPrevia.stock -= libro.cantidad;
+        } else {
+            compraPrevia.push({
+                id: libro.id,
+                nombre: libro.nombre,
+                stock: libro.stock - libro.cantidad
+            });
+        }
+    });
+
+    localStorage.setItem("Compra Previa", JSON.stringify(compraPrevia));
+};

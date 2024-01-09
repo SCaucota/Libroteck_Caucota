@@ -5,7 +5,7 @@ function iniciarCarrito() {
     iconoCarrito.addEventListener("click", function () {
         mostrarCarrito();
     });
-}
+};
 
 function mostrarCarrito() {
     let totalPrecioLibros = JSON.parse(localStorage.getItem('totalPrecioLibros')) || 0;
@@ -66,9 +66,9 @@ function mostrarCarrito() {
     crearSeccionTotal(totalPrecioLibros, precioEnvio, total);
 
     calcularEnvio(precioEnvio);
-}
+};
 
-function crearSeccionTotal(totalPrecioLibros, precioEnvio, total){
+function crearSeccionTotal(totalPrecioLibros, precioEnvio, total) {
     const seccionCarrito = document.getElementById("seccionCarrito");
 
     const divTotalYenvio = document.createElement("div");
@@ -99,7 +99,7 @@ function crearSeccionTotal(totalPrecioLibros, precioEnvio, total){
                 <h2 id="total">$${total}</h2>
             </div>
         </div>`;
-    
+
     const divBotonFinCompra = document.createElement("div");
     const botonFinCompra = document.createElement("button");
     botonFinCompra.textContent = "Iniciar Compra";
@@ -114,7 +114,27 @@ function crearSeccionTotal(totalPrecioLibros, precioEnvio, total){
     const botonVaciarCarrito = document.createElement("button");
     botonVaciarCarrito.textContent = "Vaciar Carrito";
     botonVaciarCarrito.classList.add("btn");
-    botonVaciarCarrito.addEventListener("click", vaciarCarrito);
+    botonVaciarCarrito.addEventListener("click", function () {
+        Swal.fire({
+            title: "¿Quieres vaciar el Carrito?",
+            text: "Se eliminaran todos los libros agregados",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Aceptar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "¡Se vació el Carrito!",
+                    text: "Listo para que puedas iniciar una nueva compra",
+                    icon: "success"
+                });
+                vaciarCarrito();
+            }
+        });
+    });
 
     divBotonFinCompra.appendChild(botonFinCompra);
     divBotonFinCompra.appendChild(botonVaciarCarrito);
@@ -141,29 +161,29 @@ function crearSeccionTotal(totalPrecioLibros, precioEnvio, total){
             divFormExistente.classList.remove("divForm");
         }
     });
-}
+};
 
-function crearLibrosCarrito(libro){
+function crearLibrosCarrito(libro) {
     const divLibro = document.createElement("div");
-        divLibro.setAttribute("data-libro-id", libro.id);
-        divLibro.classList.add("card");
-        divLibro.classList.add("cardCarrito");
+    divLibro.setAttribute("data-libro-id", libro.id);
+    divLibro.classList.add("card");
+    divLibro.classList.add("cardCarrito");
 
 
-        divLibro.innerHTML = `
+    divLibro.innerHTML = `
             <img src="${libro.img}" alt="carrito" class="cardImageCarrito">
             <div>
                 <h5 class="card-title">${libro.nombre}</h5>
                 <div class="input-group mb-3">
                     <span class="restar input-group-text">-</span>
-                    <input type="text" class="form-control" value=${libro.cantidad}>
+                    <input type="text" disabled class="form-control" value=${libro.cantidad}>
                     <span class="sumar input-group-text">+</span>
                 </div>
                 <p>$${libro.precio}</p>
             </div>
             <img class="eliminarIcono" src="./img/eliminar.png" alt="">`;
     return divLibro;
-}
+};
 
 function calcularEnvio(precioEnvio) {
     let botonCalcularEnvio = document.getElementById("calcular");
@@ -182,7 +202,7 @@ function calcularEnvio(precioEnvio) {
         localStorage.setItem('total', JSON.stringify(total));
         actualizarTotal();
     })
-}
+};
 
 function actualizarTotal() {
     const subtotalElemento = document.getElementById("subtotal");
@@ -196,7 +216,7 @@ function actualizarTotal() {
         totalElemento.textContent = `$${total}`;
         precioEnvioElemento.textContent = `$${precioEnvio}`;
     }
-}
+};
 
 function sumarRestarLibros(libroSeleccionado) {
     const divLibro = document.querySelector(`.cardCarrito[data-libro-id="${libroSeleccionado.id}"]`);
@@ -205,6 +225,7 @@ function sumarRestarLibros(libroSeleccionado) {
     const inputCantidad = divLibro.querySelector(".form-control");
     let total = JSON.parse(localStorage.getItem("total"));
     let precioEnvio = JSON.parse(localStorage.getItem("precioEnvio"));
+
 
 
     restar.addEventListener("click", function () {
@@ -236,25 +257,27 @@ function sumarRestarLibros(libroSeleccionado) {
         localStorage.setItem('total', JSON.stringify(total));
         localStorage.setItem('precioEnvio', JSON.stringify(precioEnvio));
         let cantidad = parseInt(inputCantidad.value);
-        cantidad += 1;
-        inputCantidad.value = cantidad;
-        actualizarCantidadEnCarrito(libroSeleccionado.id, cantidad);
-        totalCompra += libroSeleccionado.precio;
-        localStorage.setItem('totalPrecioLibros', JSON.stringify(totalCompra));
-        actualizarTotal();
-        calcularEnvio(precioEnvio)
+        let stock = libroSeleccionado.stock;
+        if (cantidad < stock) {
+            cantidad += 1;
+            inputCantidad.value = cantidad;
+            actualizarCantidadEnCarrito(libroSeleccionado.id, cantidad);
+            totalCompra += libroSeleccionado.precio;
+            localStorage.setItem('totalPrecioLibros', JSON.stringify(totalCompra));
+            actualizarTotal();
+            calcularEnvio(precioEnvio);
+        }
     });
-}
+};
 
 function actualizarCantidadEnCarrito(libroId, nuevaCantidad) {
     let carrito = JSON.parse(localStorage.getItem("Carrito"));
     let libroIndex = carrito.findIndex(libro => libro.id === libroId);
-
     if (libroIndex !== -1) {
         carrito[libroIndex] = { ...carrito[libroIndex], cantidad: nuevaCantidad };
         localStorage.setItem("Carrito", JSON.stringify(carrito));
     }
-}
+};
 
 function eliminarLibroDelCarrito(libroId) {
 
@@ -282,7 +305,7 @@ function eliminarLibroDelCarrito(libroId) {
     if (carrito.length === 0) {
         vaciarCarrito();
     }
-}
+};
 
 function vaciarCarrito() {
     localStorage.removeItem("Carrito");
@@ -304,6 +327,6 @@ function vaciarCarrito() {
 
     seccionCarrito.appendChild(mensajeSinLibros);
     seccionCarrito.appendChild(botonInicio);
-}
+};
 
 iniciarCarrito();
