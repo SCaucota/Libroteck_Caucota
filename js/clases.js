@@ -26,9 +26,3 @@ const provincias = [
     new provincia(3, 'Santa Fe', 2500),
     new provincia(4, 'Mendoza', 2800)
 ];
-
-let listaDeCompra = [];
-let librosSeleccionados = '';
-let totalCompra = JSON.parse(localStorage.getItem('totalPrecioLibros'));
-let precioEnvio = 0;
-let total = 0;

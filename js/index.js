@@ -20,6 +20,18 @@ function mostrarTodosLibros() {
 };
 
 function filtroLibros() {
+    const menuCategorias = document.getElementById("dropdown");
+
+    categorias.forEach(opcion => {
+        const liCategoria = document.createElement("li");
+        const aCategoria = document.createElement("a");
+        aCategoria.classList.add("dropdown-item");
+        aCategoria.textContent = opcion.nombre;
+
+        liCategoria.appendChild(aCategoria);
+        menuCategorias.appendChild(liCategoria);
+    })
+
     const categoriaFiltro = document.querySelectorAll(".dropdown-item");
 
     categoriaFiltro.forEach(categoriaElegida => {
@@ -79,15 +91,15 @@ function verificarStock(libroId) {
 function agregarAcarrito(libroElegido) {
     let cantidad = 1;
 
-    listaDeCompra = [];
+    let listaDeCompra = [];
 
-    totalCompra += libroElegido.precio
-    let totalCompraJson = JSON.stringify(totalCompra);
-    localStorage.setItem('totalPrecioLibros', totalCompraJson);
+    let totalPrecioLibros = JSON.parse(localStorage.getItem('totalPrecioLibros'));
+    totalPrecioLibros += libroElegido.precio;
+    localStorage.setItem('totalPrecioLibros', JSON.stringify(totalPrecioLibros));
 
     let carritoActualizado = JSON.parse(localStorage.getItem("Carrito")) || [];
-    let total = JSON.parse(localStorage.getItem("total"));
-    let precioEnvio = JSON.parse(localStorage.getItem("precioEnvio"));
+    let total = JSON.parse(localStorage.getItem("total")) || 0;
+    let precioEnvio = JSON.parse(localStorage.getItem("precioEnvio")) || 0;
 
     carritoActualizado.forEach(libro => {
         listaDeCompra.push(libro);
