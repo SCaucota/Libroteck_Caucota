@@ -1,9 +1,9 @@
 function cargarLibros(url, filtro) {
-    const seccionCarrito = document.querySelector("#seccionCarrito");
-    seccionCarrito.innerHTML = '';
+    const seccionCarrito = document.getElementById("seccionCarrito");
+    seccionCarrito.innerHTML = "";
     seccionCarrito.classList.remove("seccionCarrito");
-    const seccionLibros = document.querySelector("#seccionLibros");
-    seccionLibros.innerHTML = '';
+    const seccionLibros = document.getElementById("seccionLibros");
+    seccionLibros.innerHTML = "";
 
     fetch(url)
         .then((response) => response.json())
@@ -14,6 +14,10 @@ function cargarLibros(url, filtro) {
             });
         });
 };
+
+function formatearPrecio(numero) {
+    return new Intl.NumberFormat("es-AR").format(numero);
+}
 
 function mostrarTodosLibros() {
     cargarLibros("./libros.json");
@@ -35,8 +39,8 @@ function filtroLibros() {
     const categoriaFiltro = document.querySelectorAll(".dropdown-item");
 
     categoriaFiltro.forEach(categoriaElegida => {
-        categoriaElegida.addEventListener("click", function () {
-            const categoriaSeleccionada = categorias.find(categoria => categoria.nombre === this.textContent);
+        categoriaElegida.addEventListener("click", (event) => {
+            const categoriaSeleccionada = categorias.find(categoria => categoria.nombre === event.target.textContent);
             cargarLibros("./libros.json", libro => libro.idCategoria === categoriaSeleccionada.id)
         });
     });
@@ -47,7 +51,7 @@ function filtroLibros() {
 
 function crearTarjetasLibros(libro) {
 
-    const seccionLibros = document.querySelector("#seccionLibros");
+    const seccionLibros = document.getElementById("seccionLibros");
     seccionLibros.classList.add("seccionLibros");
 
     const divLibro = document.createElement("div");
@@ -57,16 +61,14 @@ function crearTarjetasLibros(libro) {
         <img src="${libro.img}" alt="carrito" class="card-img-top">
         <div class="datosCard">
             <h5 class="card-title">${libro.nombre}</h5>
-            <p class="card-text">$${libro.precio}</p>
+            <p class="card-text">$${formatearPrecio(libro.precio)}</p>
             <button class="btn">Comprar</button>
         </div>`;
 
     const boton = divLibro.querySelector(".btn");
     boton.id = `btn-${libro.id}`;
 
-    boton.addEventListener("click", function () {
-        agregarAcarrito(libro);
-    });
+    boton.addEventListener("click", () => agregarAcarrito(libro));
 
     seccionLibros.appendChild(divLibro);
 
@@ -75,7 +77,7 @@ function crearTarjetasLibros(libro) {
 
 function verificarStock(libroId) {
     const carritoActualizado = JSON.parse(localStorage.getItem("Carrito"));
-
+    const compraPrevia = JSON.parse(localStorage.getItem("Compra Previa"));
     if (carritoActualizado) {
         const libroEnCarrito = carritoActualizado.find(libro => libro.id === libroId);
 
@@ -85,7 +87,15 @@ function verificarStock(libroId) {
             boton.textContent = "Sin Stock";
         }
     }
-
+    
+    if(compraPrevia){
+        const libroEnCompraPrevia = compraPrevia.find(libro => libro.id === libroId);
+        if (libroEnCompraPrevia && libroEnCompraPrevia.stock === 0) {
+            const boton = document.getElementById(`btn-${libroId}`);
+            boton.disabled = true;
+            boton.textContent = "Sin Stock";
+        }
+    }
 };
 
 function agregarAcarrito(libroElegido) {
@@ -93,9 +103,9 @@ function agregarAcarrito(libroElegido) {
 
     let listaDeCompra = [];
 
-    let totalPrecioLibros = JSON.parse(localStorage.getItem('totalPrecioLibros'));
+    let totalPrecioLibros = JSON.parse(localStorage.getItem("totalPrecioLibros"));
     totalPrecioLibros += libroElegido.precio;
-    localStorage.setItem('totalPrecioLibros', JSON.stringify(totalPrecioLibros));
+    localStorage.setItem("totalPrecioLibros", JSON.stringify(totalPrecioLibros));
 
     let carritoActualizado = JSON.parse(localStorage.getItem("Carrito")) || [];
     let total = JSON.parse(localStorage.getItem("total")) || 0;
@@ -128,8 +138,8 @@ function agregarAcarrito(libroElegido) {
 
     total = 0;
     precioEnvio = 0;
-    localStorage.setItem('total', JSON.stringify(total));
-    localStorage.setItem('precioEnvio', JSON.stringify(precioEnvio));
+    localStorage.setItem("total", JSON.stringify(total));
+    localStorage.setItem("precioEnvio", JSON.stringify(precioEnvio));
 
     const compraPrevia = JSON.parse(localStorage.getItem("Compra Previa"));
 
@@ -142,9 +152,9 @@ function agregarAcarrito(libroElegido) {
             }
         });
 
-        localStorage.setItem('Carrito', JSON.stringify(listaDeCompra));
+        localStorage.setItem("Carrito", JSON.stringify(listaDeCompra));
     } else {
-        localStorage.setItem('Carrito', JSON.stringify(listaDeCompra));
+        localStorage.setItem("Carrito", JSON.stringify(listaDeCompra));
     }
 
     verificarStock(libroElegido.id);

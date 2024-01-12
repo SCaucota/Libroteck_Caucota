@@ -85,8 +85,21 @@
     height: 150px;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
 .input-group{
-    width: 50%;
+    /* width: 50%; */
+    width: 56px;
 }
 
 .input-group-text{

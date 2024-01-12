@@ -1,6 +1,6 @@
 function iniciarCompra(provinciaElegida) {
 
-    const seccionCarrito = document.querySelector("#seccionCarrito");
+    const seccionCarrito = document.getElementById("seccionCarrito");
 
     const divFormExistente = seccionCarrito.querySelector(".divForm");
 
@@ -31,12 +31,12 @@ function iniciarCompra(provinciaElegida) {
                 divInput.innerHTML = `
                     <label for="${campo.id}">${campo.label}:</label>
                     <select class="form-select" name="${campo.id}" id="${campo.id}">
-                        ${campo.options.map((option) => `<option value="${option}">${option}</option>`).join('')}
+                        ${campo.options.map((option) => `<option value="${option}">${option}</option>`).join("")}
                     </select>`;
             } else {
                 divInput.innerHTML = `
                     <label for="${campo.id}">${campo.label}:</label>
-                    <input class="formInput form-control" value="${localStorage.getItem(campo.clave) ? JSON.parse(localStorage.getItem(campo.clave)) : ''}" id=${campo.id} type="${campo.type}" required>`;
+                    <input class="formInput form-control" value="${localStorage.getItem(campo.clave) ? JSON.parse(localStorage.getItem(campo.clave)) : ""}" id=${campo.id} type="${campo.type}" required>`;
             }
 
             form.appendChild(divInput);
@@ -62,7 +62,7 @@ function iniciarCompra(provinciaElegida) {
         seccionCarrito.appendChild(divForm);
     }
     const buttonFin = document.getElementById("finalizarCompra");
-    buttonFin.addEventListener("click", function (event) {
+    buttonFin.addEventListener("click", (event) => {
         event.preventDefault();
         if (verificarDatos()) {
             finCompra(provinciaElegida)
@@ -153,12 +153,12 @@ function finCompra(proviciaElegida) {
             const direccionInput = document.getElementById("direccion");
             let selectFP = document.getElementById("FormaDePago");
 
-            localStorage.setItem('Nombre Cliente', JSON.stringify(nombreInput.value));
-            localStorage.setItem('Apellido Cliente', JSON.stringify(apellidoInput.value));
-            localStorage.setItem('Telefono Cliente', JSON.stringify(telefonoInput.value));
-            localStorage.setItem('Forma De Pago Cliente', JSON.stringify(selectFP.value));
-            localStorage.setItem('Provincia Cliente', JSON.stringify(proviciaElegida));
-            localStorage.setItem('Direccion Cliente', JSON.stringify(direccionInput.value));
+            localStorage.setItem("Nombre Cliente", JSON.stringify(nombreInput.value));
+            localStorage.setItem("Apellido Cliente", JSON.stringify(apellidoInput.value));
+            localStorage.setItem("Telefono Cliente", JSON.stringify(telefonoInput.value));
+            localStorage.setItem("Forma De Pago Cliente", JSON.stringify(selectFP.value));
+            localStorage.setItem("Provincia Cliente", JSON.stringify(proviciaElegida));
+            localStorage.setItem("Direccion Cliente", JSON.stringify(direccionInput.value));
 
             mostrarResumenCompra();
         }
@@ -166,10 +166,10 @@ function finCompra(proviciaElegida) {
 };
 
 function mostrarResumenCompra() {
-    const seccionCarrito = document.querySelector("#seccionCarrito");
+    const seccionCarrito = document.getElementById("seccionCarrito");
 
-    let listaCompra = JSON.parse(localStorage.getItem('Carrito'));
-    let total = JSON.parse(localStorage.getItem('total'));
+    let listaCompra = JSON.parse(localStorage.getItem("Carrito"));
+    let total = JSON.parse(localStorage.getItem("total"));
 
     const divOverlay = document.createElement("div");
     divOverlay.classList.add("overlay");
@@ -220,13 +220,13 @@ function mostrarResumenCompra() {
         divResumen.appendChild(divLibro);
     });
 
-    const totalResumen = document.createElement('h3');
-    totalResumen.textContent = 'Total: $' + total;
+    const totalResumen = document.createElement("h3");
+    totalResumen.textContent = "Total: $" + formatearPrecio(total);
 
     const botonCerrarResumen = document.createElement("button");
     botonCerrarResumen.classList.add("btn");
     botonCerrarResumen.textContent = "Aceptar";
-    botonCerrarResumen.addEventListener("click", function () {
+    botonCerrarResumen.addEventListener("click", () => {
         window.location.href = "/";
 
         compraPrevia();
