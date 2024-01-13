@@ -40,7 +40,7 @@ function mostrarCarrito() {
             sweetAlertMensaje("¿Eliminar libros?", `Estas apunto de eliminar todos los libros de titulo: ${libro.nombre}`, "warning", "Si, eliminar")
                 .then((result) => {
                     if (result) {
-                        eliminarLibroDelCarrito(libro.id, divLibro);
+                        eliminarLibroDelCarrito(libro.id, divLibro, carrito, totalPrecioLibros);
                         sweetAlertMensaje("¡Eliminado!", "Los libros se eliminaron exitosamente", "success");
                     }
                 });
@@ -123,7 +123,6 @@ function crearSeccionTotal(totalPrecioLibros, precioEnvio, total) {
     botonFinCompra.addEventListener("click", () => {
         let select = document.getElementById("opcionProvincia");
         let opcionElegida = select.value;
-        let total = JSON.parse(localStorage.getItem("total")) || 0;
         total != 0 ? iniciarCompra(opcionElegida) : (sweetAlertMensaje("Olvidaste calcular el total", "Haz click en calcular", "warning"));
     });
 
@@ -147,9 +146,9 @@ function crearSeccionTotal(totalPrecioLibros, precioEnvio, total) {
     seccionCarrito.appendChild(divTotalYenvio);
 
     document.getElementById("opcionProvincia").addEventListener("change", () => {
-        localStorage.setItem('precioEnvio', JSON.stringify(0));
+        localStorage.setItem("precioEnvio", JSON.stringify(0));
 
-        localStorage.setItem('total', JSON.stringify(0));
+        localStorage.setItem("total", JSON.stringify(0));
 
         actualizarTotales();
 
@@ -162,7 +161,7 @@ function crearSeccionTotal(totalPrecioLibros, precioEnvio, total) {
     });
 
     let botonCalcularEnvio = document.getElementById("calcular");
-    botonCalcularEnvio.addEventListener("click", () => calcularEnvio(precioEnvio, totalPrecioLibros));
+    botonCalcularEnvio.addEventListener("click", () => calcularEnvio(precioEnvio, totalPrecioLibros, total));
 };
 
 function crearLibrosCarrito(libro) {
@@ -205,7 +204,7 @@ function crearLibrosCarrito(libro) {
     return divLibro;
 };
 
-function calcularEnvio(precioEnvio, totalPrecioLibros) {
+function calcularEnvio(precioEnvio, totalPrecioLibros, total) {
     let select = document.getElementById("opcionProvincia");
 
     let opcionElegida = select.value;
@@ -256,7 +255,7 @@ function actualizarCantidadEnCarrito(libro, cantidad, inputCantidad, divLibro) {
         actualizarTotalPrecioLibros(carrito, totalPrecioLibros, cantidad, cantidadActual, nuevaCantidad, libro);
         sweetAlertMensaje("¡Ups! Ingresaste una cantidad que supera el stock", `Ingresa un número mayor a 1 y menor a ${stock}`, "warning");
     } else if (cantidadActual + cantidad === 0) {
-        eliminarLibroDelCarrito(libro.id, divLibro);
+        eliminarLibroDelCarrito(libro.id, divLibro, carrito, totalPrecioLibros);
         return;
     } else if (cantidadActual + cantidad < 0) {
         nuevaCantidad = 1;
@@ -290,12 +289,9 @@ function actualizarTotalPrecioLibros(carrito, totalPrecioLibros, cantidad, canti
     localStorage.setItem("totalPrecioLibros", JSON.stringify(totalPrecioLibros));
 };
 
-function eliminarLibroDelCarrito(libroId, divLibro) {
-
-    let carrito = JSON.parse(localStorage.getItem("Carrito"));
+function eliminarLibroDelCarrito(libroId, divLibro, carrito, totalPrecioLibros) {
     let total = JSON.parse(localStorage.getItem("total"));
     let precioEnvio = JSON.parse(localStorage.getItem("precioEnvio"));
-    let totalPrecioLibros = JSON.parse(localStorage.getItem("totalPrecioLibros"));
 
     total = 0;
     precioEnvio = 0;
