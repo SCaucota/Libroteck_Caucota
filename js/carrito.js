@@ -1,6 +1,8 @@
 function iniciarCarrito() {
-    const iconoCarrito = document.querySelector(".iconoCarrito");
-    iconoCarrito.addEventListener("click", mostrarCarrito);
+    const navBarsmCarrito = document.getElementById("navBarsmCarrito");
+    navBarsmCarrito.addEventListener("click", mostrarCarrito);
+    const navBarlgCarrito = document.getElementById("navBarlgCarrito");
+    navBarlgCarrito.addEventListener("click", mostrarCarrito);
 };
 
 function mostrarCarrito() {
@@ -22,6 +24,8 @@ function mostrarCarrito() {
         return;
     }
 
+    const fragmento = document.createDocumentFragment();
+
     carrito.forEach(libro => {
         const divLibro = crearLibrosCarrito(libro);
 
@@ -29,7 +33,7 @@ function mostrarCarrito() {
         divContainerLibros.classList.add("containerLibros")
 
         divContainerLibros.appendChild(divLibro);
-        seccionCarrito.appendChild(divContainerLibros);
+        fragmento.appendChild(divContainerLibros);
 
         const eliminarIcono = divLibro.querySelector(".eliminarIcono");
         eliminarIcono.addEventListener("click", () => {
@@ -45,17 +49,25 @@ function mostrarCarrito() {
             }).then((result) => {
                 if (result.isConfirmed) {
                     eliminarLibroDelCarrito(libro.id, divLibro);
-                    Swal.fire({
-                        title: "¡Eliminado!",
-                        text: "Los libros se eliminaron exitosamente",
-                        icon: "success"
-                    });
+                    sweetAlertMensaje("¡Eliminado!", "Los libros se eliminaron exitosamente", "success");
                 }
             });
         });
     });
+
+    seccionCarrito.innerHTML = '';
+    seccionCarrito.appendChild(fragmento);
+
     crearSeccionTotal(totalPrecioLibros, precioEnvio, total);
 };
+
+function sweetAlertMensaje(title, text, icon) {
+    Swal.fire({
+        title: `${title}`,
+        text: `${text}`,
+        icon: `${icon}`
+    });
+}
 
 function crearSeccionTotal(totalPrecioLibros, precioEnvio, total) {
     const seccionCarrito = document.getElementById("seccionCarrito");
@@ -90,6 +102,7 @@ function crearSeccionTotal(totalPrecioLibros, precioEnvio, total) {
         </div>`;
 
     const divBotonFinCompra = document.createElement("div");
+    divBotonFinCompra.classList.add("divBotonFinCompra");
     const botonFinCompra = document.createElement("button");
     botonFinCompra.textContent = "Iniciar Compra";
     botonFinCompra.classList.add("btn");
@@ -97,12 +110,13 @@ function crearSeccionTotal(totalPrecioLibros, precioEnvio, total) {
         let select = document.getElementById("opcionProvincia");
         let opcionElegida = select.value;
         let total = JSON.parse(localStorage.getItem("total")) || 0;
-        total != 0 ? iniciarCompra(opcionElegida) : (Swal.fire({ title: "Olvidaste calcular el total", text: "Haz click en calcular", icon: "warning" }));
+        total != 0 ? iniciarCompra(opcionElegida) : (sweetAlertMensaje("Olvidaste calcular el total", "Haz click en calcular", "warning"));
     });
 
     const botonVaciarCarrito = document.createElement("button");
     botonVaciarCarrito.textContent = "Vaciar Carrito";
     botonVaciarCarrito.classList.add("btn");
+    botonVaciarCarrito.classList.add("botonVaciar");
     botonVaciarCarrito.addEventListener("click", () => {
         Swal.fire({
             title: "¿Quieres vaciar el Carrito?",
@@ -115,11 +129,7 @@ function crearSeccionTotal(totalPrecioLibros, precioEnvio, total) {
             confirmButtonText: "Aceptar"
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire({
-                    title: "¡Se vació el Carrito!",
-                    text: "Listo para que puedas iniciar una nueva compra",
-                    icon: "success"
-                });
+                sweetAlertMensaje("¡Se vació el Carrito!", "Listo para que puedas iniciar una nueva compra", "success");
                 vaciarCarrito();
             }
         });
@@ -216,22 +226,6 @@ function actualizarTotal() {
     let total = JSON.parse(localStorage.getItem("total")) || 0;
     let precioEnvio = JSON.parse(localStorage.getItem("precioEnvio")) || 0;
 
-    if(totalPrecioLibros > 100000){
-        const descuento = (totalPrecioLibros * 15) / 100;
-
-        totalPrecioLibros -= descuento;
-
-        const divSubtotal = document.querySelector(".totalPrecioLibros");
-        const descuentoMensajeExistente = divSubtotal.querySelector(".descuentoMensaje");
-        if(descuentoMensajeExistente){
-            descuentoMensajeExistente.remove();
-        }
-        const descuentoMensaje = document.createElement("p");
-        descuentoMensaje.textContent = "Descuento aplicado del 15%";
-        descuentoMensaje.classList.add("descuentoMensaje");
-        divSubtotal.appendChild(descuentoMensaje);
-    };
-
     if (subtotalElemento && totalElemento && precioEnvioElemento) {
         subtotalElemento.textContent = `$${formatearPrecio(totalPrecioLibros)}`;
         totalElemento.textContent = `$${formatearPrecio(total)}`;
@@ -243,58 +237,57 @@ function actualizarCantidadEnCarrito(libro, cantidad, inputCantidad, divLibro) {
 
     let carrito = JSON.parse(localStorage.getItem("Carrito"));
     let totalPrecioLibros = JSON.parse(localStorage.getItem("totalPrecioLibros")) || 0;
+    if(inputCantidad.value === ""){
+        return;
+    }
     let cantidadActual = parseInt(inputCantidad.value);
     let stock = libro.stock;
+    let nuevaCantidad;
 
-    if (cantidadActual + cantidad > 0 && cantidadActual + cantidad <= stock) {
-        console.log("IF1")
-        let nuevaCantidad = cantidadActual + cantidad;
+    if (cantidadActual + cantidad > 0 && cantidadActual + cantidad <= stock){
+        nuevaCantidad = cantidadActual + cantidad;
         inputCantidad.value = nuevaCantidad;
         if (cantidad === 0) {
             let libroCarrito = carrito.find(producto => producto.id === libro.id);
             totalPrecioLibros -= libroCarrito.cantidad * libro.precio;
             totalPrecioLibros += nuevaCantidad * libro.precio;
-        } else {
+        }else{
+            console.log("Nueva Cantidad: ", nuevaCantidad);
+            console.log("Cantidad: ", cantidad);
+            console.log("Cantidad Actual: ", cantidadActual);
             totalPrecioLibros += cantidad * libro.precio;
         }
-        localStorage.setItem("total", JSON.stringify(0));
-        localStorage.setItem("precioEnvio", JSON.stringify(0));
-        localStorage.setItem("totalPrecioLibros", JSON.stringify(totalPrecioLibros));
-
-        let libroIndex = carrito.findIndex(producto => producto.id === libro.id);
-
-        if (libroIndex !== -1) {
-            carrito[libroIndex] = { ...carrito[libroIndex], cantidad: nuevaCantidad };
-            localStorage.setItem("Carrito", JSON.stringify(carrito));
-        }
-
-        actualizarTotal();
     } else if (cantidadActual > stock) {
-        console.log("IF2");
         nuevaCantidad = stock;
         inputCantidad.value = nuevaCantidad;
-
         let libroCarrito = carrito.find(producto => producto.id === libro.id);
         totalPrecioLibros -= libroCarrito.cantidad * libro.precio;
         totalPrecioLibros += nuevaCantidad * libro.precio;
-
-
-        localStorage.setItem("total", JSON.stringify(0));
-        localStorage.setItem("precioEnvio", JSON.stringify(0));
-        localStorage.setItem("totalPrecioLibros", JSON.stringify(totalPrecioLibros));
-
-        let libroIndex = carrito.findIndex(producto => producto.id === libro.id);
-
-        if (libroIndex !== -1) {
-            carrito[libroIndex] = { ...carrito[libroIndex], cantidad: nuevaCantidad };
-            localStorage.setItem("Carrito", JSON.stringify(carrito));
-        }
-
-        alert("cantidad ingresada inválida");
-        actualizarTotal();
-    }else if(cantidadActual + cantidad <= 0){
+        sweetAlertMensaje("¡Ups! Ingresaste una cantidad que supera el stock", `Ingresa un número mayor a 1 y menor a ${stock}`, "warning");
+    } else if (cantidadActual + cantidad === 0) {
         eliminarLibroDelCarrito(libro.id, divLibro);
+        return;
+    } else if (cantidadActual + cantidad < 0) {
+        nuevaCantidad = 1;
+        inputCantidad.value = nuevaCantidad;
+        let libroCarrito = carrito.find(producto => producto.id === libro.id);
+        totalPrecioLibros -= libroCarrito.cantidad * libro.precio;
+        totalPrecioLibros += nuevaCantidad * libro.precio;
+        sweetAlertMensaje("¡Ups! Ingresaste una número negativo", `Ingresa un número mayor a 1 y menor a ${stock}`, "warning");
+    };
+
+    let libroIndex = carrito.findIndex(producto => producto.id === libro.id);
+
+    if (libroIndex !== -1) {
+        carrito[libroIndex] = { ...carrito[libroIndex], cantidad: nuevaCantidad };
+        localStorage.setItem("Carrito", JSON.stringify(carrito));
     }
+
+    localStorage.setItem("total", JSON.stringify(0));
+    localStorage.setItem("precioEnvio", JSON.stringify(0));
+    localStorage.setItem("totalPrecioLibros", JSON.stringify(totalPrecioLibros));
+
+    actualizarTotal();
 };
 
 function eliminarLibroDelCarrito(libroId, divLibro) {
@@ -336,6 +329,10 @@ function vaciarCarrito() {
 
     const seccionCarrito = document.getElementById("seccionCarrito");
     seccionCarrito.innerHTML = "";
+    
+    const divSinCarrito = document.createElement("div");
+    divSinCarrito.classList.add("divSinCarrito");
+
     const mensajeSinLibros = document.createElement("h1");
     mensajeSinLibros.textContent = "Sin libros en el Carrito";
 
@@ -344,8 +341,9 @@ function vaciarCarrito() {
     botonInicio.classList.add("btn");
     botonInicio.addEventListener("click", mostrarTodosLibros);
 
-    seccionCarrito.appendChild(mensajeSinLibros);
-    seccionCarrito.appendChild(botonInicio);
+    divSinCarrito.appendChild(mensajeSinLibros);
+    divSinCarrito.appendChild(botonInicio);
+    seccionCarrito.appendChild(divSinCarrito);
 };
 
 iniciarCarrito();

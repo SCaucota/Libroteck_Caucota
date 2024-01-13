@@ -21,6 +21,7 @@ function iniciarCompra(provinciaElegida) {
         tituloForm.textContent = "Se requieren algunos datos para poder generar su compra:";
 
         const form = document.createElement("form");
+        form.classList.add("formDataCliente");
         form.id = "form";
 
         camposFormulario.forEach(campo => {
@@ -46,19 +47,18 @@ function iniciarCompra(provinciaElegida) {
         provinciaDataDiv.classList.add("inputForm", "provinciaData");
         provinciaDataDiv.innerHTML = `
             <label class="provinciaEscogida" for="provincia">Provincia:</label>
-            <p class="nombreProvincia">${provinciaElegida}</p>
+            <h5 class="nombreProvincia">${provinciaElegida}</h5>
         `;
 
         const button = document.createElement("button");
         button.id = "finalizarCompra";
-        button.classList.add("btn");
-        button.classList.add("finCompra");
+        button.classList.add("btn", "finCompra");
         button.textContent = "Finalizar Compra";
 
         form.appendChild(provinciaDataDiv);
-        form.appendChild(button);
         divForm.appendChild(tituloForm);
         divForm.appendChild(form);
+        divForm.appendChild(button);
         seccionCarrito.appendChild(divForm);
     }
     const buttonFin = document.getElementById("finalizarCompra");
@@ -83,11 +83,7 @@ function verificarDatos() {
 
     const camposVacios = document.querySelectorAll(".formInput:invalid");
     if (camposVacios.length > 0) {
-        Swal.fire({
-            title: "¡Ups! No has completado todos los campos",
-            text: "Asegúrate de completar correctamente el formulario",
-            icon: "warning"
-        });
+        sweetAlertMensaje("¡Ups! No has completado todos los campos", "Asegúrate de completar correctamente el formulario", "warning");
     }
 
     const campos = [
@@ -141,11 +137,7 @@ function finCompra(proviciaElegida) {
         confirmButtonText: "Confirmar"
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire({
-                title: "¡Compra exitosa!",
-                text: "Muchas gracias por comprar con nostoros. Lo/la mantendremos informado del envio",
-                icon: "success"
-            });
+            sweetAlertMensaje("¡Compra exitosa!", "Muchas gracias por comprar con nostoros. Lo/la mantendremos informado del envio", "success");
 
             const nombreInput = document.getElementById("nombre");
             const apellidoInput = document.getElementById("apellido");
@@ -213,7 +205,7 @@ function mostrarResumenCompra() {
 
         divLibro.innerHTML = `
             <div class="dato">
-                <h5 class="card-title">${libro.nombre}</h5>
+                <h5 class="card-title">- ${libro.nombre}</h5>
                 <h5>x${libro.cantidad}</h5>
             </div>`;
 
@@ -221,6 +213,7 @@ function mostrarResumenCompra() {
     });
 
     const totalResumen = document.createElement("h3");
+    totalResumen.classList.add("totalResumen")
     totalResumen.textContent = "Total: $" + formatearPrecio(total);
 
     const botonCerrarResumen = document.createElement("button");

@@ -21,8 +21,38 @@
 
 /*Menu*/
 
+.navbar{
+    padding: 15px 0px;
+}
+
 .nav-link{
     font-size: 20px;
+}
+
+.dropdown-item{
+    cursor: pointer;
+}
+
+#inputBusqueda{
+    width: 16rem;
+}
+
+.botonBuscar{
+    width: 5rem !important;
+    height: 100% !important;
+}
+
+.botonBuscar:hover{
+    color: white;
+    border-color: white !important;
+}
+
+#formBusqueda{
+    margin-right: 2rem;
+}
+
+.container-fluid{
+    padding: 0px 20px;
 }
 
 /*Sección libros*/
@@ -85,21 +115,18 @@
     height: 150px;
 }
 
+.cantidad-input{
+    -moz-appearance: textfield;
+}
 
-
-
-
-
-
-
-
-
-
-
+.cantidad-input::-webkit-inner-spin-button,
+.cantidad-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 
 .input-group{
-    /* width: 50%; */
-    width: 56px;
+    width: 50%;
 }
 
 .input-group-text{
@@ -147,6 +174,22 @@
     width: 100px;
 }
 
+.divBotonFinCompra{
+    display: flex;
+    width: 50%;
+    gap: 100px;
+    justify-content: space-between;
+}
+
+.botonVaciar{
+    background-color: rgb(192, 33, 33);
+}
+
+.botonVaciar:hover{
+    color: rgb(192, 33, 33);
+    border-color: rgb(192, 33, 33);
+}
+
 /*Form Carrito*/
 
 .divForm{
@@ -166,6 +209,7 @@
 .provinciaData{
     display: flex;
     gap: 10px;
+    flex-direction: column;
 }
 
 .inputForm{
@@ -173,12 +217,22 @@
 }
 
 .finCompra{
+    border: 1px solid white;
+    width: 30%;
+}
+
+.finCompra:hover{
     background-color: white;
     color: black;
 }
 
-.finCompra:hover{
-    border: 1px solid white;
+.formDataCliente{
+    width: 30%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /*RESUMEN*/
@@ -189,6 +243,16 @@
 
 .divResumen h2{
     margin-bottom: 1rem;
+}
+
+.totalResumen{
+    padding: 1rem 0rem;
+}
+
+.dato{
+    display: flex;
+    justify-content: space-between;
+    padding: 0px 8rem;
 }
 
 .overlay {
@@ -212,6 +276,32 @@
     max-width: 600px;
     width: 100%;
     text-align: center;
+}
+
+.divResumen h1{
+    padding-bottom: 1rem;
+}
+
+.divResumen h3{
+    padding-bottom: 1rem;
+}
+
+/*Carrito Vacío*/
+
+.divSinCarrito{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.divSinCarrito h1{
+    text-align: center;
+    padding-bottom: 1rem;
+}
+
+.divSinCarrito button{
+    width: 20%;
 }
 
 /*TOASTIFY*/

@@ -1,4 +1,5 @@
 function cargarLibros(url, filtro) {
+    return new Promise((resolve, reject) => {
     const seccionCarrito = document.getElementById("seccionCarrito");
     seccionCarrito.innerHTML = "";
     seccionCarrito.classList.remove("seccionCarrito");
@@ -12,7 +13,10 @@ function cargarLibros(url, filtro) {
             librosFiltrados.forEach(libro => {
                 crearTarjetasLibros(libro);
             });
-        });
+            resolve(librosFiltrados)
+        })
+        .catch(reject);
+    });
 };
 
 function formatearPrecio(numero) {
@@ -48,6 +52,25 @@ function filtroLibros() {
     const inicio = document.querySelector(".inicio");
     inicio.addEventListener("click", mostrarTodosLibros);
 };
+
+function buscarLibro() {
+    const formBusqueda = document.getElementById("formBusqueda");
+    formBusqueda.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const inputBusqueda = document.getElementById("inputBusqueda").value.toLowerCase();
+
+        if (inputBusqueda.trim() === "") {
+            mostrarTodosLibros();
+        } else {
+            cargarLibros("./libros.json", libro => libro.nombre.toLowerCase().includes(inputBusqueda))
+                .then(coincidencias => {
+                    if (coincidencias.length === 0) {
+                        mostrarTodosLibros();
+                    }
+                })
+        }
+    });
+}
 
 function crearTarjetasLibros(libro) {
 
@@ -87,8 +110,8 @@ function verificarStock(libroId) {
             boton.textContent = "Sin Stock";
         }
     }
-    
-    if(compraPrevia){
+
+    if (compraPrevia) {
         const libroEnCompraPrevia = compraPrevia.find(libro => libro.id === libroId);
         if (libroEnCompraPrevia && libroEnCompraPrevia.stock === 0) {
             const boton = document.getElementById(`btn-${libroId}`);
@@ -173,4 +196,5 @@ function agregarAcarrito(libroElegido) {
 };
 
 filtroLibros();
+buscarLibro();
 mostrarTodosLibros();
