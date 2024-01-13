@@ -37,21 +37,13 @@ function mostrarCarrito() {
 
         const eliminarIcono = divLibro.querySelector(".eliminarIcono");
         eliminarIcono.addEventListener("click", () => {
-            Swal.fire({
-                title: "¿Eliminar libros?",
-                text: `Estas apunto de eliminar todos los libros de titulo: ${libro.nombre}`,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                cancelButtonText: "Cancelar",
-                confirmButtonText: "Sí, eliminar"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    eliminarLibroDelCarrito(libro.id, divLibro);
-                    sweetAlertMensaje("¡Eliminado!", "Los libros se eliminaron exitosamente", "success");
-                }
-            });
+            sweetAlertMensaje("¿Eliminar libros?", `Estas apunto de eliminar todos los libros de titulo: ${libro.nombre}`, "warning", "Si, eliminar")
+                .then((result) => {
+                    if (result.isConfirmed) {
+                        eliminarLibroDelCarrito(libro.id, divLibro);
+                        sweetAlertMensaje("¡Eliminado!", "Los libros se eliminaron exitosamente", "success");
+                    }
+                });
         });
     });
 
@@ -61,12 +53,25 @@ function mostrarCarrito() {
     crearSeccionTotal(totalPrecioLibros, precioEnvio, total);
 };
 
-function sweetAlertMensaje(title, text, icon) {
-    Swal.fire({
-        title: `${title}`,
-        text: `${text}`,
-        icon: `${icon}`
-    });
+function sweetAlertMensaje(title, text, icon, confirmar) {
+    if(confirmar){
+        Swal.fire({
+            title: `${title}`,
+            text: `${text}`,
+            icon: `${icon}`,
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            cancelButtonText: "Cancelar",
+            confirmButtonText: `${confirmar}`
+        })
+    }else{
+        Swal.fire({
+            title: `${title}`,
+            text: `${text}`,
+            icon: `${icon}`
+        });
+    }
 }
 
 function crearSeccionTotal(totalPrecioLibros, precioEnvio, total) {
@@ -118,21 +123,13 @@ function crearSeccionTotal(totalPrecioLibros, precioEnvio, total) {
     botonVaciarCarrito.classList.add("btn");
     botonVaciarCarrito.classList.add("botonVaciar");
     botonVaciarCarrito.addEventListener("click", () => {
-        Swal.fire({
-            title: "¿Quieres vaciar el Carrito?",
-            text: "Se eliminaran todos los libros agregados",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            cancelButtonText: "Cancelar",
-            confirmButtonText: "Aceptar"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                sweetAlertMensaje("¡Se vació el Carrito!", "Listo para que puedas iniciar una nueva compra", "success");
-                vaciarCarrito();
-            }
-        });
+        sweetAlertMensaje("¿Quieres vaciar el Carrito?", "Se eliminaran todos los libros agregados", "warning", "Aceptar")
+            .then((result) => {
+                if (result.isConfirmed) {
+                    sweetAlertMensaje("¡Se vació el Carrito!", "Listo para que puedas iniciar una nueva compra", "success");
+                    vaciarCarrito();
+                }
+            });
     });
 
     divBotonFinCompra.appendChild(botonFinCompra);
@@ -237,32 +234,21 @@ function actualizarCantidadEnCarrito(libro, cantidad, inputCantidad, divLibro) {
 
     let carrito = JSON.parse(localStorage.getItem("Carrito"));
     let totalPrecioLibros = JSON.parse(localStorage.getItem("totalPrecioLibros")) || 0;
-    if(inputCantidad.value === ""){
+    if (inputCantidad.value === "") {
         return;
     }
     let cantidadActual = parseInt(inputCantidad.value);
     let stock = libro.stock;
     let nuevaCantidad;
 
-    if (cantidadActual + cantidad > 0 && cantidadActual + cantidad <= stock){
+    if (cantidadActual + cantidad > 0 && cantidadActual + cantidad <= stock) {
         nuevaCantidad = cantidadActual + cantidad;
         inputCantidad.value = nuevaCantidad;
-        if (cantidad === 0) {
-            let libroCarrito = carrito.find(producto => producto.id === libro.id);
-            totalPrecioLibros -= libroCarrito.cantidad * libro.precio;
-            totalPrecioLibros += nuevaCantidad * libro.precio;
-        }else{
-            console.log("Nueva Cantidad: ", nuevaCantidad);
-            console.log("Cantidad: ", cantidad);
-            console.log("Cantidad Actual: ", cantidadActual);
-            totalPrecioLibros += cantidad * libro.precio;
-        }
+        actualizarTotalPrecioLibros(carrito, totalPrecioLibros, cantidad, cantidadActual, nuevaCantidad, libro);
     } else if (cantidadActual > stock) {
         nuevaCantidad = stock;
         inputCantidad.value = nuevaCantidad;
-        let libroCarrito = carrito.find(producto => producto.id === libro.id);
-        totalPrecioLibros -= libroCarrito.cantidad * libro.precio;
-        totalPrecioLibros += nuevaCantidad * libro.precio;
+        actualizarTotalPrecioLibros(carrito, totalPrecioLibros, cantidad, cantidadActual, nuevaCantidad, libro);
         sweetAlertMensaje("¡Ups! Ingresaste una cantidad que supera el stock", `Ingresa un número mayor a 1 y menor a ${stock}`, "warning");
     } else if (cantidadActual + cantidad === 0) {
         eliminarLibroDelCarrito(libro.id, divLibro);
@@ -270,9 +256,7 @@ function actualizarCantidadEnCarrito(libro, cantidad, inputCantidad, divLibro) {
     } else if (cantidadActual + cantidad < 0) {
         nuevaCantidad = 1;
         inputCantidad.value = nuevaCantidad;
-        let libroCarrito = carrito.find(producto => producto.id === libro.id);
-        totalPrecioLibros -= libroCarrito.cantidad * libro.precio;
-        totalPrecioLibros += nuevaCantidad * libro.precio;
+        actualizarTotalPrecioLibros(carrito, totalPrecioLibros, cantidad, cantidadActual, nuevaCantidad, libro);
         sweetAlertMensaje("¡Ups! Ingresaste una número negativo", `Ingresa un número mayor a 1 y menor a ${stock}`, "warning");
     };
 
@@ -285,9 +269,20 @@ function actualizarCantidadEnCarrito(libro, cantidad, inputCantidad, divLibro) {
 
     localStorage.setItem("total", JSON.stringify(0));
     localStorage.setItem("precioEnvio", JSON.stringify(0));
-    localStorage.setItem("totalPrecioLibros", JSON.stringify(totalPrecioLibros));
 
     actualizarTotal();
+};
+
+function actualizarTotalPrecioLibros(carrito, totalPrecioLibros, cantidad, cantidadActual, nuevaCantidad, libro) {
+    if (cantidad === 0 || cantidadActual + cantidad < 0 || cantidadActual > libro.stock) {
+        let libroCarrito = carrito.find(producto => producto.id === libro.id);
+        totalPrecioLibros -= libroCarrito.cantidad * libro.precio;
+        totalPrecioLibros += nuevaCantidad * libro.precio;
+    }else{
+        totalPrecioLibros += cantidad * libro.precio;
+    }
+
+    localStorage.setItem("totalPrecioLibros", JSON.stringify(totalPrecioLibros));
 };
 
 function eliminarLibroDelCarrito(libroId, divLibro) {
@@ -329,7 +324,7 @@ function vaciarCarrito() {
 
     const seccionCarrito = document.getElementById("seccionCarrito");
     seccionCarrito.innerHTML = "";
-    
+
     const divSinCarrito = document.createElement("div");
     divSinCarrito.classList.add("divSinCarrito");
 

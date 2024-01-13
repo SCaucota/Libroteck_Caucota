@@ -19,15 +19,11 @@ function cargarLibros(url, filtro) {
     });
 };
 
-function formatearPrecio(numero) {
-    return new Intl.NumberFormat("es-AR").format(numero);
-}
-
 function mostrarTodosLibros() {
     cargarLibros("./libros.json");
 };
 
-function filtroLibros() {
+function filtroLibrosCategorias() {
     const menuCategorias = document.getElementById("dropdown");
 
     categorias.forEach(opcion => {
@@ -55,7 +51,7 @@ function filtroLibros() {
 
 function buscarLibro() {
     const formBusqueda = document.getElementById("formBusqueda");
-    formBusqueda.addEventListener("submit", function (event) {
+    formBusqueda.addEventListener("submit", (event) => {
         event.preventDefault();
         const inputBusqueda = document.getElementById("inputBusqueda").value.toLowerCase();
 
@@ -95,10 +91,10 @@ function crearTarjetasLibros(libro) {
 
     seccionLibros.appendChild(divLibro);
 
-    verificarStock(libro.id);
+    actualizarEstadoStock(libro.id);
 };
 
-function verificarStock(libroId) {
+function actualizarEstadoStock(libroId) {
     const carritoActualizado = JSON.parse(localStorage.getItem("Carrito"));
     const compraPrevia = JSON.parse(localStorage.getItem("Compra Previa"));
     if (carritoActualizado) {
@@ -180,7 +176,7 @@ function agregarAcarrito(libroElegido) {
         localStorage.setItem("Carrito", JSON.stringify(listaDeCompra));
     }
 
-    verificarStock(libroElegido.id);
+    actualizarEstadoStock(libroElegido.id);
 
     Toastify({
         text: `Agregado al carrito`,
@@ -195,6 +191,10 @@ function agregarAcarrito(libroElegido) {
     }).showToast();
 };
 
-filtroLibros();
+function formatearPrecio(numero) {
+    return new Intl.NumberFormat("es-AR").format(numero);
+};
+
+filtroLibrosCategorias();
 buscarLibro();
 mostrarTodosLibros();

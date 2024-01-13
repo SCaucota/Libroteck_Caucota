@@ -125,36 +125,27 @@ function verificarDatos() {
 };
 
 function finCompra(proviciaElegida) {
+    sweetAlertMensaje("Estás apunto de confirmar tu compra", "Una vez confirmada no es posible cancelarse", "question", "Confirmar")
+        .then((result) => {
+            if (result.isConfirmed) {
+                sweetAlertMensaje("¡Compra exitosa!", "Muchas gracias por comprar con nostoros. Lo/la mantendremos informado del envio", "success");
 
-    Swal.fire({
-        title: "Estás apunto de confirmar tu compra",
-        text: "Una vez confirmada no es posible cancelarse",
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        cancelButtonText: "Cancelar",
-        confirmButtonText: "Confirmar"
-    }).then((result) => {
-        if (result.isConfirmed) {
-            sweetAlertMensaje("¡Compra exitosa!", "Muchas gracias por comprar con nostoros. Lo/la mantendremos informado del envio", "success");
+                const nombreInput = document.getElementById("nombre");
+                const apellidoInput = document.getElementById("apellido");
+                const telefonoInput = document.getElementById("telefono");
+                const direccionInput = document.getElementById("direccion");
+                let selectFP = document.getElementById("FormaDePago");
 
-            const nombreInput = document.getElementById("nombre");
-            const apellidoInput = document.getElementById("apellido");
-            const telefonoInput = document.getElementById("telefono");
-            const direccionInput = document.getElementById("direccion");
-            let selectFP = document.getElementById("FormaDePago");
+                localStorage.setItem("Nombre Cliente", JSON.stringify(nombreInput.value));
+                localStorage.setItem("Apellido Cliente", JSON.stringify(apellidoInput.value));
+                localStorage.setItem("Telefono Cliente", JSON.stringify(telefonoInput.value));
+                localStorage.setItem("Forma De Pago Cliente", JSON.stringify(selectFP.value));
+                localStorage.setItem("Provincia Cliente", JSON.stringify(proviciaElegida));
+                localStorage.setItem("Direccion Cliente", JSON.stringify(direccionInput.value));
 
-            localStorage.setItem("Nombre Cliente", JSON.stringify(nombreInput.value));
-            localStorage.setItem("Apellido Cliente", JSON.stringify(apellidoInput.value));
-            localStorage.setItem("Telefono Cliente", JSON.stringify(telefonoInput.value));
-            localStorage.setItem("Forma De Pago Cliente", JSON.stringify(selectFP.value));
-            localStorage.setItem("Provincia Cliente", JSON.stringify(proviciaElegida));
-            localStorage.setItem("Direccion Cliente", JSON.stringify(direccionInput.value));
-
-            mostrarResumenCompra();
-        }
-    });
+                mostrarResumenCompra();
+            }
+        });
 };
 
 function mostrarResumenCompra() {
