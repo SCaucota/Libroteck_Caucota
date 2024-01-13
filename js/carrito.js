@@ -123,7 +123,8 @@ function crearSeccionTotal(totalPrecioLibros, precioEnvio, total) {
     botonFinCompra.addEventListener("click", () => {
         let select = document.getElementById("opcionProvincia");
         let opcionElegida = select.value;
-        total != 0 ? iniciarCompra(opcionElegida) : (sweetAlertMensaje("Olvidaste calcular el total", "Haz click en calcular", "warning"));
+        let total = JSON.parse(localStorage.getItem("total"));
+        total != 0 ? iniciarCompra(opcionElegida) : sweetAlertMensaje("Olvidaste calcular el total", "Haz click en calcular", "warning");
     });
 
     const botonVaciarCarrito = document.createElement("button");
@@ -149,7 +150,6 @@ function crearSeccionTotal(totalPrecioLibros, precioEnvio, total) {
         localStorage.setItem("precioEnvio", JSON.stringify(0));
 
         localStorage.setItem("total", JSON.stringify(0));
-
         actualizarTotales();
 
         const divFormExistente = document.querySelector(".divForm");
@@ -161,7 +161,7 @@ function crearSeccionTotal(totalPrecioLibros, precioEnvio, total) {
     });
 
     let botonCalcularEnvio = document.getElementById("calcular");
-    botonCalcularEnvio.addEventListener("click", () => calcularEnvio(precioEnvio, totalPrecioLibros, total));
+    botonCalcularEnvio.addEventListener("click", () => calcularEnvio(precioEnvio, totalPrecioLibros));
 };
 
 function crearLibrosCarrito(libro) {
@@ -204,7 +204,7 @@ function crearLibrosCarrito(libro) {
     return divLibro;
 };
 
-function calcularEnvio(precioEnvio, totalPrecioLibros, total) {
+function calcularEnvio(precioEnvio, totalPrecioLibros) {
     let select = document.getElementById("opcionProvincia");
 
     let opcionElegida = select.value;
@@ -212,10 +212,10 @@ function calcularEnvio(precioEnvio, totalPrecioLibros, total) {
     let proviciaElegida = provincias.find(prov => prov.nombre === opcionElegida);
 
     precioEnvio = proviciaElegida.costoEnvio;
-    localStorage.setItem('precioEnvio', JSON.stringify(precioEnvio));
+    localStorage.setItem("precioEnvio", JSON.stringify(precioEnvio));
 
-    total = totalPrecioLibros + precioEnvio;
-    localStorage.setItem('total', JSON.stringify(total));
+    let total = totalPrecioLibros + precioEnvio;
+    localStorage.setItem("total", JSON.stringify(total));
     actualizarTotales();
 };
 
