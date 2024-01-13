@@ -40,7 +40,7 @@ function mostrarCarrito() {
             sweetAlertMensaje("¿Eliminar libros?", `Estas apunto de eliminar todos los libros de titulo: ${libro.nombre}`, "warning", "Si, eliminar")
                 .then((result) => {
                     if (result) {
-                        eliminarLibroDelCarrito(libro.id, divLibro, carrito, totalPrecioLibros);
+                        eliminarLibroDelCarrito(libro.id, divLibro);
                         sweetAlertMensaje("¡Eliminado!", "Los libros se eliminaron exitosamente", "success");
                     }
                 });
@@ -255,7 +255,7 @@ function actualizarCantidadEnCarrito(libro, cantidad, inputCantidad, divLibro) {
         actualizarTotalPrecioLibros(carrito, totalPrecioLibros, cantidad, cantidadActual, nuevaCantidad, libro);
         sweetAlertMensaje("¡Ups! Ingresaste una cantidad que supera el stock", `Ingresa un número mayor a 1 y menor a ${stock}`, "warning");
     } else if (cantidadActual + cantidad === 0) {
-        eliminarLibroDelCarrito(libro.id, divLibro, carrito, totalPrecioLibros);
+        eliminarLibroDelCarrito(libro.id, divLibro);
         return;
     } else if (cantidadActual + cantidad < 0) {
         nuevaCantidad = 1;
@@ -289,7 +289,9 @@ function actualizarTotalPrecioLibros(carrito, totalPrecioLibros, cantidad, canti
     localStorage.setItem("totalPrecioLibros", JSON.stringify(totalPrecioLibros));
 };
 
-function eliminarLibroDelCarrito(libroId, divLibro, carrito, totalPrecioLibros) {
+function eliminarLibroDelCarrito(libroId, divLibro) {
+    let carrito = JSON.parse(localStorage.getItem("Carrito"));
+    let totalPrecioLibros = JSON.parse(localStorage.getItem("totalPrecioLibros"));
     let total = JSON.parse(localStorage.getItem("total"));
     let precioEnvio = JSON.parse(localStorage.getItem("precioEnvio"));
 

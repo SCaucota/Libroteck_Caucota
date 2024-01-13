@@ -61,7 +61,9 @@ function buscarLibro() {
             cargarLibros("./libros.json", libro => libro.nombre.toLowerCase().includes(inputBusqueda))
                 .then(coincidencias => {
                     if (coincidencias.length === 0) {
-                        mostrarTodosLibros();
+                        const mensajeSinCoincidencias = document.createElement("h1");
+                        mensajeSinCoincidencias.textContent = "No se encontraron coincidencias.";
+                        seccionLibros.appendChild(mensajeSinCoincidencias);
                     }
                 })
         }
