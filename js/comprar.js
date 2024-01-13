@@ -70,13 +70,6 @@ function iniciarCompra(provinciaElegida) {
     });
 };
 
-function manejoErrores(mensaje) {
-    const errorDato = document.createElement("div");
-    errorDato.classList.add("invalid-feedback");
-    errorDato.textContent = mensaje;
-    return errorDato;
-};
-
 function verificarDatos() {
 
     let valido = true;
@@ -124,10 +117,17 @@ function verificarDatos() {
     return valido;
 };
 
+function manejoErrores(mensaje) {
+    const errorDato = document.createElement("div");
+    errorDato.classList.add("invalid-feedback");
+    errorDato.textContent = mensaje;
+    return errorDato;
+};
+
 function finCompra(proviciaElegida) {
     sweetAlertMensaje("Estás apunto de confirmar tu compra", "Una vez confirmada no es posible cancelarse", "question", "Confirmar")
         .then((result) => {
-            if (result.isConfirmed) {
+            if (result) {
                 sweetAlertMensaje("¡Compra exitosa!", "Muchas gracias por comprar con nostoros. Lo/la mantendremos informado del envio", "success");
 
                 const nombreInput = document.getElementById("nombre");
